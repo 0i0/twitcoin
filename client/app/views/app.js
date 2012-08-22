@@ -16,25 +16,22 @@ define([
             },
 
             render : function(){
-                window.counter = 0
                 this.$el.html(this.appTemplate({}));
+                this.bindUI();
+                this.bindActions();
             },
 
             bindUI : function(){
                 this.elements = {
-                    header     : this.$('#w-header'),
-                    editor     : this.$('#w-editor'),
-                    stream     : this.$('#w-stream'),
-                    filter     : this.$('#w-filter'),
-                    powerdby     : this.$('#w-powerdby'),
+                    all     : this.$('#all_my_twits')
                 };
             },
 
             bindActions : function(){
-                this.on('compile.error',this.sendMessage,this);
-                // this.elements.sendBtn.on('click', this.proxy(function(e) {
-                //     this.trigger('send.click')
-                // }));
+                this.elements.all.on('click', this.proxy(function(e) {
+                    location.replace('/twitter/balance/'+session.username)
+                    return false;
+                }));
             }
         });
 

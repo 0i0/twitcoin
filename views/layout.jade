@@ -10,6 +10,7 @@ html.no-js(lang='en')
     link(rel="stylesheet", href="css/boilerplate.css")
     link(rel="stylesheet", href="css/theme.css")
     block style
+    
     - if (config.debug)
       script(src="/libs/modernizr.min.js")
     - else
@@ -19,7 +20,7 @@ html.no-js(lang='en')
 
   body
     block content
-    //scripts start
+
     script(type="text/javascript",src="/socket.io/socket.io.js")
     script(type="text/javascript")
       var socket = io.connect(!{JSON.stringify(config.orign)});

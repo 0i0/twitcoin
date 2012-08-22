@@ -4,6 +4,9 @@ block title
   title TwitCoin
 
 block topScripts
+  - if(req.session.twitterScreenName)
+    script
+      window.session = {username:'!{req.session.twitterScreenName}'}
   script(data-main="/app/main",src="/libs/require/require.js")
 
 block style

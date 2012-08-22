@@ -1,17 +1,22 @@
 <div class="app">
-	<div>
-		<label>to:</label><input type="text"/>
-	</div>
-	<div>
-		<label>amount:</label><input type="text"/>
-	</div>
-	<button href="/send">send money</button>
-	<br>
-	<br>
-	<a href="/twitter/balance">Authenticate DB Account</a>
-	<br>
-	<a href="/twitter/balance">Balance</a>
+	<table>
+		<tr>
+			<td><label>to:</label></td>
+			<td><input type="text"/></td>
+		</tr>
+		<tr>
+			<td><label>amount:</label></td>
+			<td><input type="text"/></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><button href="/send">send money</button></td>
+		</tr>
+	</table>
 	
+	<br>
+	<br>
+	<a id="all_my_twits" href="/twitter/balance">Grab all my twitts</a>
 </div>
 
 
