@@ -1,0 +1,24 @@
+{
+  "name": "twitcoin",
+  "version": "0.0.1",
+  "description": "twitter based payment system",
+  "engines": {
+    "node": "0.6.x",
+    "npm":  "1.0.x"
+  },
+  "author": "Leo <0@0i0.io>",
+  "dependencies": {
+    "express": ">=0.0.1"
+    , "stylus" : ">=0.0.1"
+    , "jade" :">=0.0.1"
+    , "redis": ">=0.0.1"
+    , "connect-redis": ">=0.0.1"
+    , "socket.io":">= 0.6.18"
+    , "url" : ">= 0.0.1"
+    , "request" : ">= 0.0.1"
+    , "oauth" : ">= 0.0.1"
+    , "connect": ">=1.0.3 < 2"
+    , "bignum" : ">= 0.0.1"   
+    , "zombie" : ">= 0.0.1"   
+  }
+}

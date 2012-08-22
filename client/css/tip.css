@@ -1,0 +1,30 @@
+
+.tip { position: absolute; width: 0; height: 0; line-height: 0; border: 12px dashed black; }
+  
+.tip-n { border-bottom-color: #000; }
+.tip-s { border-top-color: #000; }
+.tip-e { border-left-color: hsl(222, 27%, 40%); }
+.tip-w { border-right-color: hsl(222, 27%, 40%); }
+  
+ .tip-n.tip { top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
+.tip-nw.tip { top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
+.tip-ne.tip { top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent; border-right-color: transparent;}
+ .tip-s.tip { bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+.tip-sw.tip { bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+.tip-se.tip { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
+ .tip-e.tip { right: -12px; top: 23%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
+ .tip-w.tip { left: -12px; top: 23%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
+
+.tip.double::after { position: absolute; width: 0; height: 0; line-height: 0; border: 13px dashed black;content:''}
+.tip-n.double::after{ border-bottom-color: #000; }
+.tip-s.double::after{ border-top-color: #000; }
+.tip-e.double::after{ border-left-color: hsl(220, 64%, 48%); }
+.tip-w.double::after{ border-right-color: hsl(220, 64%, 48%); }
+ .tip-n.tip.double::after{ top: 0px; left: 50%; margin-left: -5px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent; }
+.tip-nw.tip.double::after{ top: 0; left: 10px; border-bottom-style: solid; border-top: none; border-left-color: transparent; border-right-color: transparent;}
+.tip-ne.tip.double::after{ top: 0; right: 10px; border-bottom-style: solid; border-top: none;  border-left-color: transparent; border-right-color: transparent;}
+ .tip-s.tip.double::after{ bottom: 0; left: 50%; margin-left: -5px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+.tip-sw.tip.double::after{ bottom: 0; left: 10px; border-top-style: solid; border-bottom: none;  border-left-color: transparent; border-right-color: transparent; }
+.tip-se.tip.double::after{ bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
+ .tip-e.tip.double::after{ right: -2px; top: -6px; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; z-index: -1;}
+ .tip-w.tip.double::after{ left: -2px; top: -7px; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; z-index: -1;}
