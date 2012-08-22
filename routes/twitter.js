@@ -47,8 +47,6 @@ app.get('/twitter/callback', function(req, res){
     } else {
       req.session.oauthAccessToken = oauthAccessToken;
       req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
-      console.log(oauthAccessToken);
-      console.log(oauthAccessTokenSecret);
       // Right here is where we would write out some nice user stuff
       twitter().get("http://twitter.com/account/verify_credentials.json"
         , req.session.oauthAccessToken
@@ -61,9 +59,12 @@ app.get('/twitter/callback', function(req, res){
           data = JSON.parse(data);
           req.session.twitterScreenName = data["screen_name"];      
           if(req.session.twitterScreenName.toLowerCase() == config.twitter.username.toLowerCase()){
-            console.log('eq:'+req.session.twitterScreenName);
-            redis.set("oauthAccessToken", req.session.oauthAccessToken);
-            redis.set("oauthAccessTokenSecret", req.session.oauthAccessTokenSecret);
+            redis.set("oauthAccessToken", req.session.oauthAccessToken,function (err, reply) {
+                console.log('set oauthAccessToken:'+reply.toString());
+            });
+            redis.set("oauthAccessTokenSecret", req.session.oauthAccessTokenSecret,function (err, reply) {
+                console.log('set oauthAccessTokenSecret:'+reply.toString());
+            });
           }
           res.redirect('/');
         }  
@@ -78,33 +79,67 @@ app.get('/twitter/logout', function(req, res){
 });
 
 app.get('/twitter/update', function(req, res){
-  var body = {
-    'status': '1000 to @'+req.session.twitterScreenName.toLowerCase()
-  };
-  var oauthAccessToken,oauthAccessTokenSecret;
   redis.get("oauthAccessToken",function(err, reply) {
-    oauthAccessToken = reply
-  })
-  redis.get("oauthAccessTokenSecret",function(err, reply) {
-    oauthAccessTokenSecret = reply
-  })
-  console.log(oauthAccessToken);
-  console.log(oauthAccessTokenSecret);
-  twitter().post("https://api.twitter.com/1/statuses/update.json"
+    var oauthAccessToken = reply.toString()
+    redis.get("oauthAccessTokenSecret",function(err, reply) {
+      var oauthAccessTokenSecret = reply.toString()
+      var body = {
+        'status': '1000 to @'+req.session.twitterScreenName.toLowerCase()
+      };
+      twitter().post("https://api.twitter.com/1/statuses/update.json"
                   , oauthAccessToken
                   , oauthAccessTokenSecret
                   , body
                   , "application/json"
                   , function (error, data, response) {
-    if (error) {
-      res.send("Error getting twitter screen name : " + util.inspect(error), 500);
-    } else {
-      console.log("data is %j", data);
-      data = JSON.parse(data);
-      req.session.twitterScreenName = data["screen_name"];    
-      res.redirect('/');
-    }  
-  }); 
+        if (error) {
+          res.send("Error getting twitter screen name : " + util.inspect(error), 500);
+        } else {
+          console.log("data is %j", data);
+          data = JSON.parse(data);
+          req.session.twitterScreenName = data["screen_name"];    
+          res.redirect('/');
+        }  
+      }); 
+    })
+  })
+});
+
+app.get('/twitter/send/:to/:amount', function(req, res){
+  var from = req.session.twitterScreenName.toLowerCase()
+    , to = req.params.to
+    , amount = parseFloat(req.params.amount)
+  redis.get("oauthAccessToken",function(err, reply) {
+    var oauthAccessToken = reply.toString()
+    redis.get("oauthAccessTokenSecret",function(err, reply) {
+      var oauthAccessTokenSecret = reply.toString()
+      var body = {
+        'status': '@%s sent %d twitcoins to @%s'
+      };
+      body.status = util.format(body.status
+        ,from
+        ,amount
+        ,to
+      )
+      twitter().post("https://api.twitter.com/1/statuses/update.json"
+                  , oauthAccessToken
+                  , oauthAccessTokenSecret
+                  , body
+                  , "application/json"
+                  , function (error, data, response) {
+        if (error) {
+          res.send("Error getting twitter screen name : " + util.inspect(error), 500);
+        } else {
+          data = JSON.parse(data); 
+          res.writeHead(200, {"Content-Type": "application/json"});
+          res.write(
+            JSON.stringify(data)
+          );
+          res.end();
+        }  
+      }); 
+    })
+  })
 });
 
 app.get('/twitter/balance/:user', function(req, res){

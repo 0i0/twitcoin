@@ -23,7 +23,10 @@ define([
 
             bindUI : function(){
                 this.elements = {
-                    all     : this.$('#all_my_twits')
+                    all: this.$('#all_my_twits')
+                    ,send: this.$('#send')
+                    ,to:    this.$('input[name="to"]')
+                    ,amount:    this.$('input[name="amount"]')
                 };
             },
 
@@ -31,6 +34,13 @@ define([
                 this.elements.all.on('click', this.proxy(function(e) {
                     location.replace('/twitter/balance/'+session.username)
                     return false;
+                }));
+                this.elements.send.on('click', this.proxy(function(e) {
+                    $.ajax({
+                        url:'/twitter/send/'+this.elements.to.val()+'/'+this.elements.amount.val()
+                        ,success:function(data){console.log(data)}
+                        ,error:function(data){console.log(data)}
+                    })
                 }));
             }
         });

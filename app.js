@@ -57,7 +57,7 @@ sio.sockets.on('connection', events)
 var Browser = require("zombie");
 
 browser = new Browser()
-browser.visit("http://0.0.0.0:8000/twitter/auth",function(){
+browser.visit(config.orign + '/twitter/auth',function(){
   browser
     .fill("session[username_or_email]", "twitcoinx")
     .fill("session[password]", "twitcoinxxx")
