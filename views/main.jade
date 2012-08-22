@@ -7,20 +7,22 @@ block topScripts
   script(data-main="/app/main",src="/libs/require/require.js")
 
 block style
-  link(rel="stylesheet",href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700')
+  - if (config.debug)
+    link(rel="stylesheet",href='/css/DroidSans.css')
+  - else
+    link(rel="stylesheet",href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700')
   link(rel="stylesheet",href="css/all.css")
 
 block content
-  - if (req.session.twitterScreenName)
-    header logged in as:
-      span !{req.session.twitterScreenName}
-      a(href="/twitter/logout") logout
-  - else
-    div
-      a(href="/twitter/connect") twitter-connect
-    div
-      a(href="/twitter/auth")
-        img(src="/img/sign-in-with-twitter-l.png")
+  header
+    div#logbox.f-right.clearfix
+      - if (req.session.twitterScreenName)
+        span.welcome Welcome, !{req.session.twitterScreenName}
+        a(href="/twitter/logout") logout
+      - else
+        div
+          a(href="/twitter/auth")
+            img(src="/img/sign-in-with-twitter-l.png")
   div#app-wrapper
 
 block scripts
