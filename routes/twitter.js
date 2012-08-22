@@ -55,16 +55,12 @@ app.get('/twitter/callback', function(req, res){
         if (error) {
           res.send("Error getting twitter screen name : " + util.inspect(error), 500);
         } else {
-          //console.log("data is %j", data);
+          //TODO check first time, grant 1000 coins
           data = JSON.parse(data);
           req.session.twitterScreenName = data["screen_name"];      
           if(req.session.twitterScreenName.toLowerCase() == config.twitter.username.toLowerCase()){
-            redis.set("oauthAccessToken", req.session.oauthAccessToken,function (err, reply) {
-                console.log('set oauthAccessToken:'+reply.toString());
-            });
-            redis.set("oauthAccessTokenSecret", req.session.oauthAccessTokenSecret,function (err, reply) {
-                console.log('set oauthAccessTokenSecret:'+reply.toString());
-            });
+            redis.set("oauthAccessToken", req.session.oauthAccessToken);
+            redis.set("oauthAccessTokenSecret", req.session.oauthAccessTokenSecret);
           }
           res.redirect('/');
         }  
@@ -78,14 +74,24 @@ app.get('/twitter/logout', function(req, res){
   res.redirect('/');
 });
 
-app.get('/twitter/update', function(req, res){
+
+/* Grnat 1000 coins */
+app.get('/twitter/grant', function(req, res){
   redis.get("oauthAccessToken",function(err, reply) {
     var oauthAccessToken = reply.toString()
     redis.get("oauthAccessTokenSecret",function(err, reply) {
       var oauthAccessTokenSecret = reply.toString()
+      var from = config.twitter.username
+      , to = req.session.twitterScreenName.toLowerCase()
+      , amount = 1000
       var body = {
-        'status': '1000 to @'+req.session.twitterScreenName.toLowerCase()
+        'status': '%d twitcoins sent from @%s to @%s'
       };
+      body.status = util.format(body.status
+        ,amount
+        ,from
+        ,to
+      )
       twitter().post("https://api.twitter.com/1/statuses/update.json"
                   , oauthAccessToken
                   , oauthAccessTokenSecret
@@ -107,18 +113,20 @@ app.get('/twitter/update', function(req, res){
 
 app.get('/twitter/send/:to/:amount', function(req, res){
   var from = req.session.twitterScreenName.toLowerCase()
-    , to = req.params.to
+    , to = req.params.to.toLowerCase()
     , amount = parseFloat(req.params.amount)
+  //TODO - verify to user exist
+  //TODO - verify balance
   redis.get("oauthAccessToken",function(err, reply) {
     var oauthAccessToken = reply.toString()
     redis.get("oauthAccessTokenSecret",function(err, reply) {
       var oauthAccessTokenSecret = reply.toString()
       var body = {
-        'status': '@%s sent %d twitcoins to @%s'
+        'status': '%d twitcoins sent from @%s to @%s'
       };
       body.status = util.format(body.status
-        ,from
         ,amount
+        ,from
         ,to
       )
       twitter().post("https://api.twitter.com/1/statuses/update.json"
@@ -139,6 +147,27 @@ app.get('/twitter/send/:to/:amount', function(req, res){
         }  
       }); 
     })
+  })
+});
+
+app.get('/twitter/balance', function(req, res){
+  getFulltimeline(req, res,config.twitter.username,[],null,function(error,twits){
+    if (error) {
+    }else{
+      var sum = 0
+      for (key in twits)
+      {
+        if(twits[key].text.match('to @'+req.session.twitterScreenName.toLowerCase()))
+        sum += parseFloat(twits[key].text.match(/(\d*?\.?\d*) twitcoins/)[1])
+        if(twits[key].text.match('from @'+req.session.twitterScreenName.toLowerCase()))
+        sum -= parseFloat(twits[key].text.match(/(\d*?\.?\d*) twitcoins/)[1])
+      }
+      res.writeHead(200, {"Content-Type": "application/json"});
+      res.write(
+        JSON.stringify({balance:sum})
+      );
+      res.end();
+    }
   })
 });
 
