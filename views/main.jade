@@ -1,31 +1,27 @@
 extends layout
 
-block title
-  title TwitCoin
-
-block topScripts
-  - if(req.session.twitterScreenName)
-    script
-      window.session = {username:'!{req.session.twitterScreenName}'}
-  script(data-main="/app/main",src="/libs/require/require.js")
-
-block style
-  - if (config.debug)
-    link(rel="stylesheet",href='/css/DroidSans.css')
-  - else
-    link(rel="stylesheet",href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700')
-  link(rel="stylesheet",href="css/all.css")
-
 block content
-  header
-    div#logbox.f-right.clearfix
-      - if (req.session.twitterScreenName)
-        span.welcome Welcome, !{req.session.twitterScreenName}
+  div hello !{req.session.twitterScreenName || "visitor"}
+  - if(!req.session.masteroauthAccessTokenSecret)
+    div
+      a(href="/twitter/setmaster") please set master account
+  - else
+    - if(!req.session.twitterScreenName)
+      a(href="/twitter/auth") login
+    - else
+      div
         a(href="/twitter/logout") logout
-      - else
-        div
-          a(href="/twitter/auth")
-            img(src="/img/sign-in-with-twitter-l.png")
-  div#app-wrapper
+      div
+        a(href="/twitter/grant") grant 1000
+      div
+        label to:
+        input(id="to",type="text",name="to")
+      div
+        label amount:
+        input(id="amount",type="text",name="amount")
+      div
+        input(type="button",value="send",onclick="send()")
 
-block scripts
+
+
+ 
